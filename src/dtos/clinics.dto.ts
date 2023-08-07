@@ -28,7 +28,13 @@ export class UpdateClinicDto {
   @IsOptional()
   @ValidateIf((obj, value) => {
     if (value) {
-      obj.files = JSON.parse(value);
+      try {
+        obj.files = JSON.parse(value);
+        // Your code to handle the parsed data
+      } catch (error) {
+        throw [error];
+        // Handle the error, e.g., provide default values or show an error message to the user
+      }
     }
     return true;
   })
