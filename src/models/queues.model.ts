@@ -21,10 +21,6 @@ const QueueSchema: Schema = new Schema(
       type: Number,
       required: true,
     },
-    floor: {
-      type: Number,
-      required: true,
-    },
     userID: {
       type: String,
       required: true,
@@ -35,7 +31,7 @@ const QueueSchema: Schema = new Schema(
       required: true,
     },
     date: {
-      type: String,
+      type: Date,
       require: true,
     },
   },

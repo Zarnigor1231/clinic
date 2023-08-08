@@ -17,6 +17,6 @@ export class CustomerRoute implements Routes {
   private initializeRoutes() {
     this.router.get(`${this.path}`, AuthMiddleware(['doctor']), this.customer.getCustomers);
     this.router.get(`${this.path}/:id`, AuthMiddleware(['doctor']), this.customer.getCustomerById);
-    this.router.put(`${this.path}:id`, ValidationMiddleware(UpdateCustomerDto, true), this.customer.updateCustomer);
+    this.router.put(`${this.path}/:id`, ValidationMiddleware(UpdateCustomerDto, true), this.customer.updateCustomer);
   }
 }

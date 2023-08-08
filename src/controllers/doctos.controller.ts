@@ -1,4 +1,5 @@
 import { Doctor } from '@/interfaces/doctors.interface';
+import { Query } from '@/interfaces/query.interface';
 import { DoctorService } from '@/services/doctors.service';
 import { NextFunction, Request, Response } from 'express';
 import { Container } from 'typedi';
@@ -8,11 +9,28 @@ export class DoctorController {
 
   public getDoctors = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const serviceID = req.query.service_id as string;
-      const clinicID: string = req.query.clinic_id as string;
-      const doctorName: string = req.query.name as string;
+      const query = {
+        serviceID: req.query.service_id,
+        clinicID: req.query.clinic_id,
+        doctorName: req.query.name,
+      };
 
-      const findAllDoctorsData: Doctor[] = await this.Doctor.findAllDoctor(serviceID, clinicID, doctorName);
+      const findAllDoctorsData: Doctor[] = await this.Doctor.findAllDoctor(query as Query);
+
+      res.status(200).json({ data: findAllDoctorsData, message: 'findAll' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getDoctorsClinic = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const query = {
+        clinicID: req.query.clinic_id,
+        doctorName: req.query.name,
+      };
+
+      const findAllDoctorsData: Doctor[] = await this.Doctor.findAllDoctorClinc(query as Query);
 
       res.status(200).json({ data: findAllDoctorsData, message: 'findAll' });
     } catch (error) {

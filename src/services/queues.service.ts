@@ -7,22 +7,26 @@ import { CustomerModel } from '@/models/customers.model';
 import { DoctorModel } from '@/models/doctors.model';
 import { Doctor } from '@/interfaces/doctors.interface';
 import { User } from '@/interfaces/users.interface';
+import { newDate } from '@/config/date';
 
 @Service()
 export class QueueService {
   public async findAllQueue(): Promise<Queues[]> {
-    const queues: Queues[] = await QueueModel.find()
-      .populate({ path: 'clinic', select: 'name' })
-      .populate({ path: 'doctor', select: 'name' })
-      .populate({ path: 'user', select: 'name' });
+    const queues: Queues[] = await QueueModel.find().populate([
+      { path: 'clinicID', select: 'name' },
+      { path: 'doctorID', select: ['firstName', 'lastName'] },
+      { path: 'userID', select: 'name' },
+    ]);
+    console.log(queues);
     return queues;
   }
 
   public async findQueueById(queueId: string): Promise<Queues> {
-    const findQueue: Queues = await QueueModel.findOne({ _id: queueId })
-      .populate({ path: 'clinic', select: 'name' })
-      .populate({ path: 'doctor', select: 'name' })
-      .populate({ path: 'user', select: 'name' });
+    const findQueue: Queues = await QueueModel.findOne({ _id: queueId }).populate([
+      { path: 'clinicID', select: 'name' },
+      { path: 'doctorID', select: ['firstName', 'lastName'] },
+      { path: 'userID', select: 'name' },
+    ]);
     if (!findQueue) throw new HttpException(409, "Queue doesn't exist");
 
     return findQueue;
@@ -35,6 +39,14 @@ export class QueueService {
     const findQueue: Queues[] = await QueueModel.find({ doctorID: queueData.doctorID });
 
     const findUsers: Queues[] = await QueueModel.find({ userID: user._id.toString() });
+
+    // const date = '';
+
+    // const customers: Customer[] = await CustomerModel.find({ $and: [{ clinicID: queueData.clinicID }, { userID: queueData.userID }] });
+    // if (!customers.length) {
+    //   date =
+    // }
+
     if (!findUsers.length) {
       const createQueueData: Queues = await QueueModel.create({
         ...queueData,
@@ -42,6 +54,7 @@ export class QueueService {
         userID: user._id.toString(),
         queue: findQueue.length + 1,
         check: 1,
+        date: newDate(),
       });
       const createCustomerData: Customer = await CustomerModel.create({ userID: createQueueData.userID, doctorID: createQueueData.doctorID });
 
@@ -54,6 +67,7 @@ export class QueueService {
       userID: user._id.toString(),
       queue: findQueue.length + 1,
       check: ++findUsers[findUsers.length - 1].check,
+      date: newDate(),
     });
 
     const createCustomerData: Customer = await CustomerModel.create({ userID: createQueueData.userID, doctorID: createQueueData.doctorID });

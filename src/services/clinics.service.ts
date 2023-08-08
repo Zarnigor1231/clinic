@@ -6,10 +6,6 @@ import fs from 'fs/promises';
 import { writeFile } from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
-import { Doctor } from '@/interfaces/doctors.interface';
-import { DoctorModel } from '@/models/doctors.model';
-import { Services } from '@/interfaces/services.interface';
-import { ServiceModel } from '@/models/services.model';
 
 @Service()
 export class ClinicService {
@@ -18,25 +14,11 @@ export class ClinicService {
     return clinics;
   }
 
-  public async findClinicDepartments(
-    ClinicId: string,
-    departments?: string,
-  ): Promise<{ findDoctor?: Doctor[]; findService?: Services[]; findPrices?: Services[] }> {
-    if (departments == 'doctors') {
-      const findDoctor: Doctor[] = await DoctorModel.find({ clinic: ClinicId });
-      if (!findDoctor) throw new HttpException(409, "Clinic doesn't exist");
-      return { findDoctor };
-    } else if (departments == 'services') {
-      const findService: Services[] = await ServiceModel.find({ clinic: ClinicId });
-      if (!findService) throw new HttpException(409, "Clinic doesn't exist");
+  public async findClinicById(clinicID: string): Promise<Clinic> {
+    const findClinic: Clinic = await ClinicModel.findOne({ _id: clinicID });
+    if (!findClinic) throw new HttpException(409, "Clinic doesn't exist");
 
-      return { findService };
-    } else if (departments == 'prices') {
-      const findPrices: Services[] = await ServiceModel.find({ clinic: ClinicId }).select({ name: 1, price: 1 });
-      if (!findPrices) throw new HttpException(409, "Clinic doesn't exist");
-
-      return { findPrices };
-    }
+    return findClinic;
   }
 
   public async createClinic(ClinicData: Clinic, files?: Express.Multer.File[]): Promise<Clinic> {

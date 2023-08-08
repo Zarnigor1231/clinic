@@ -1,4 +1,5 @@
 import { Clinic } from '@/interfaces/clinics.interface';
+import { Query } from '@/interfaces/query.interface';
 import { ClinicService } from '@/services/clinics.service';
 import { NextFunction, Request, Response } from 'express';
 import { Container } from 'typedi';
@@ -16,12 +17,11 @@ export class ClinicController {
     }
   };
 
-  public getClinicDepartments = async (req: Request, res: Response, next: NextFunction) => {
+  public getClinicById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const clinicId: string = req.params.id;
-      const departments: string = req.params?.departments;
 
-      const findOneClinicData = await this.Clinic.findClinicDepartments(clinicId, departments);
+      const findOneClinicData = await this.Clinic.findClinicById(clinicId);
       if (!findOneClinicData) {
         res.status(404).json({ message: 'the attempt failed' });
       }

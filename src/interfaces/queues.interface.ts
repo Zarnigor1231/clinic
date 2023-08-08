@@ -4,7 +4,6 @@ export interface Queues {
   doctorID: string;
   queue: number;
   room: number;
-  floor: number;
   userID: string;
   check: number;
   date: string;

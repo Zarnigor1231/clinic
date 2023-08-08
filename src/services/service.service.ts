@@ -2,11 +2,14 @@ import { Service } from 'typedi';
 import { HttpException } from '@exceptions/httpException';
 import { ServiceModel } from '@/models/services.model';
 import { Services } from '@/interfaces/services.interface';
+import { Query } from '@/interfaces/query.interface';
 
 @Service()
 export class ServiceService {
-  public async findAllService(): Promise<Services[]> {
-    const services: Services[] = await ServiceModel.find().populate({ path: 'clinicID', select: 'name' });
+  public async findAllService(query: Query): Promise<Services[]> {
+    const services: Services[] = await ServiceModel.find({ clinicID: query.clinicID })
+      .select({ name: 1, price: 1 })
+      .populate({ path: 'clinicID', select: 'name' });
     return services;
   }
 

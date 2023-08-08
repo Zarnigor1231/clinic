@@ -6,14 +6,15 @@ import path from 'path';
 import sharp from 'sharp';
 import { Doctor } from '@/interfaces/doctors.interface';
 import { DoctorModel } from '@/models/doctors.model';
+import { Query } from '@/interfaces/query.interface';
 
 @Service()
 export class DoctorService {
-  public async findAllDoctor(serviceID: string, clinicID: string, doctorName: string): Promise<Doctor[]> {
-    if (doctorName) {
-      const name: string = doctorName.toLocaleLowerCase();
+  public async findAllDoctor(query: Query): Promise<Doctor[]> {
+    if (query.doctorName) {
+      const name: string = query.doctorName.toLocaleLowerCase();
 
-      const doctor: Doctor[] = await DoctorModel.find({ $and: [{ clinicID }, { serviceID }] });
+      const doctor: Doctor[] = await DoctorModel.find({ $and: [{ clinicID: query.clinicID }, { serviceID: query.serviceID }] });
 
       const doctorArr: Doctor[] = [];
 
@@ -28,7 +29,32 @@ export class DoctorService {
 
       return doctors;
     }
-    const findDoctor: Doctor[] = await DoctorModel.find({ $and: [{ clinicID }, { serviceID }] });
+    const findDoctor: Doctor[] = await DoctorModel.find({ $and: [{ clinicID: query.clinicID }, { serviceID: query.serviceID }] });
+    if (!findDoctor) throw new HttpException(409, "doctors doesn't exist");
+
+    return findDoctor;
+  }
+
+  public async findAllDoctorClinc(query: Query): Promise<Doctor[]> {
+    if (query.doctorName) {
+      const name: string = query.doctorName.toLocaleLowerCase();
+
+      const doctor: Doctor[] = await DoctorModel.find({ clinicID: query.clinicID });
+
+      const doctorArr: Doctor[] = [];
+
+      for (let i = 0; i < doctor.length; i++) {
+        if (doctor[i].firstName.includes(name) || doctor[i].lastName.includes(name)) {
+          doctorArr.push(doctor[i]);
+        }
+      }
+
+      if (!doctor) throw new HttpException(409, "doctors doesn't exist");
+      const doctors: Doctor[] = doctorArr.length ? doctorArr : doctor;
+
+      return doctors;
+    }
+    const findDoctor: Doctor[] = await DoctorModel.find({ clinicID: query.clinicID });
     if (!findDoctor) throw new HttpException(409, "doctors doesn't exist");
 
     return findDoctor;

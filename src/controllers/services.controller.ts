@@ -2,13 +2,17 @@ import { NextFunction, Request, Response } from 'express';
 import { Container } from 'typedi';
 import { ServiceService } from '@/services/service.service';
 import { Services } from '@/interfaces/services.interface';
+import { Query } from '@/interfaces/query.interface';
 
 export class ServiceController {
   public service = Container.get(ServiceService);
 
   public getServices = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const findAllServicesData: Services[] = await this.service.findAllService();
+      const query = {
+        clinicID: req.query.clinic_id,
+      };
+      const findAllServicesData: Services[] = await this.service.findAllService(query as Query);
 
       res.status(200).json({ data: findAllServicesData, message: 'findAll' });
     } catch (error) {

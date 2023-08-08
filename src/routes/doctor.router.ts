@@ -17,6 +17,7 @@ export class DoctorRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}/`, AuthMiddleware(['user']), this.doctor.getDoctors);
+    this.router.get(`${this.path}/`, AuthMiddleware(['user']), this.doctor.getDoctorsClinic);
     this.router.get(`${this.path}/:id`, AuthMiddleware(['user']), this.doctor.getDoctorById);
     this.router.post(
       `${this.path}`,
