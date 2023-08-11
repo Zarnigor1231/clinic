@@ -6,7 +6,7 @@ export interface Doctor {
   file: string;
   serviceID: string;
   clinicID: string;
-  isTime: string;
+  schedule: string;
   isDay: string;
   roomNo: number;
   startWork: string;

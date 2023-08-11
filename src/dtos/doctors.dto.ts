@@ -80,7 +80,7 @@ export class UpdateDoctorDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  public isTime: string;
+  public schedule: string;
 
   @IsString()
   @IsNotEmpty()

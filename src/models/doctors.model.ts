@@ -29,7 +29,7 @@ const DoctorSchema: Schema = new Schema({
     required: true,
     ref: 'Clinic',
   },
-  isTime: {
+  schedule: {
     type: String,
     required: true,
   },

@@ -7,7 +7,7 @@ import { CustomerModel } from '@/models/customers.model';
 import { DoctorModel } from '@/models/doctors.model';
 import { Doctor } from '@/interfaces/doctors.interface';
 import { User } from '@/interfaces/users.interface';
-import { newDate } from '@/config/date';
+import moment from 'moment';
 
 @Service()
 export class QueueService {
@@ -38,23 +38,30 @@ export class QueueService {
 
     const findQueue: Queues[] = await QueueModel.find({ doctorID: queueData.doctorID });
 
-    const findUsers: Queues[] = await QueueModel.find({ userID: user._id.toString() });
+    const findDoctorSchedule: Doctor = await DoctorModel.findOne({ doctorID: queueData.doctorID });
 
-    // const date = '';
+    const newMoment = moment('09:00', 'HH:mm');
 
-    // const customers: Customer[] = await CustomerModel.find({ $and: [{ clinicID: queueData.clinicID }, { userID: queueData.userID }] });
-    // if (!customers.length) {
-    //   date =
-    // }
+    let findUsersCount = await QueueModel.countDocuments({ doctorID: queueData.doctorID }, { date: newMoment });
 
-    if (!findUsers.length) {
+    const [startHour, endHour] = `${findDoctorSchedule.schedule}`.split('-');
+
+    const newMomentQueue = moment(`${startHour}`, 'HH:mm').add(30 * findUsersCount, 'm');
+    console.log(newMomentQueue);
+
+    if (newMomentQueue.valueOf() >= moment(`${endHour}`, 'HH:mm').valueOf()) {
+      queueData.date = `${newMoment}`;
+    } else {
+      queueData.date = `${newMomentQueue}`;
+    }
+
+    if (!findUsersCount) {
       const createQueueData: Queues = await QueueModel.create({
         ...queueData,
         room: findDoctor.roomNo,
         userID: user._id.toString(),
         queue: findQueue.length + 1,
         check: 1,
-        date: newDate(),
       });
       const createCustomerData: Customer = await CustomerModel.create({ userID: createQueueData.userID, doctorID: createQueueData.doctorID });
 
@@ -66,8 +73,7 @@ export class QueueService {
       room: findDoctor.roomNo,
       userID: user._id.toString(),
       queue: findQueue.length + 1,
-      check: ++findUsers[findUsers.length - 1].check,
-      date: newDate(),
+      check: ++findUsersCount,
     });
 
     const createCustomerData: Customer = await CustomerModel.create({ userID: createQueueData.userID, doctorID: createQueueData.doctorID });
