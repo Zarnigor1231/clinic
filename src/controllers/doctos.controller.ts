@@ -69,7 +69,6 @@ export class DoctorController {
       const file = req?.file;
 
       const updateDoctorData: Doctor = await this.Doctor.updateDoctor(doctorId, doctorData, file);
-      console.log(updateDoctorData);
 
       res.status(200).json({ data: updateDoctorData, message: 'updated' });
     } catch (error) {

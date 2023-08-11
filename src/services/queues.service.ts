@@ -17,7 +17,6 @@ export class QueueService {
       { path: 'doctorID', select: ['firstName', 'lastName'] },
       { path: 'userID', select: 'name' },
     ]);
-    console.log(queues);
     return queues;
   }
 
@@ -47,7 +46,6 @@ export class QueueService {
     const [startHour, endHour] = `${findDoctorSchedule.schedule}`.split('-');
 
     const newMomentQueue = moment(`${startHour}`, 'HH:mm').add(30 * findUsersCount, 'm');
-    console.log(newMomentQueue);
 
     if (newMomentQueue.valueOf() >= moment(`${endHour}`, 'HH:mm').valueOf()) {
       queueData.date = `${newMoment}`;
