@@ -31,12 +31,12 @@
 //   return new Date(queueDate);
 // };
 
-const moment = require('moment');
+// const moment = require('moment');
 
-// Create a new moment object with the time set to 09:00
-const newMoment = moment('09:00', 'HH:mm').add(30 * 20, 'm');
+// // Create a new moment object with the time set to 09:00
+// const newMoment = moment('09:00', 'HH:mm').add(30 * 20, 'm');
 
-console.log(newMoment, moment('18:00', 'HH:mm'), newMoment.valueOf() >= moment('18:00', 'HH:mm').valueOf());
-if (newMoment.valueOf() >= moment('18:00', 'HH:mm').valueOf()) {
-  console.log('Error Date:', newMoment);
-}
+// console.log(newMoment, moment('18:00', 'HH:mm'), newMoment.valueOf() >= moment('18:00', 'HH:mm').valueOf());
+// if (newMoment.valueOf() >= moment('18:00', 'HH:mm').valueOf()) {
+//   console.log('Error Date:', newMoment);
+// }
